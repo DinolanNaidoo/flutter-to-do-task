@@ -68,11 +68,13 @@ before_script:
   # worked reasonably well for us and we find stable is usually too outdated
   # and has too many missing framework features.
   - git clone https://github.com/DinolanNaidoo/flutter-to-do-task.git
+  - ./flutter/bin/flutter doctor
 
   # Add Flutter to the PATH environment variable.
   - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
 
 script:
+  - ./flutter/bin/flutter test
   # Prints the flutter version
   # (allows you to ensure, for each build, that Flutter is set up correctly.)
 
