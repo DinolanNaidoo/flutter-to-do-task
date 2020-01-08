@@ -76,7 +76,7 @@ script:
   # Prints the flutter version
   # (allows you to ensure, for each build, that Flutter is set up correctly.)
 
-  #- flutter doctor -v
+  - flutter doctor
 
   # Run Flutter build
-  - ./flutter/bin/flutter build apk
+  - flutter build apk
