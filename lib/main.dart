@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_to_do/database_content_create.dart';
+import 'database_content_create.dart';
+import 'dart:async';
+
+var fido;
 
 void main() => runApp(MyApp());
 
@@ -7,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Notes',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -20,7 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Add Note'),
     );
   }
 }
@@ -44,17 +49,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int id = 0;
+  String title = '';
+  String content = '';
+  final myTitle = TextEditingController();
+  final myContent = TextEditingController();
+  var note = new Notes();
+  var db;
 
-  void _incrementCounter() {
+  _MyHomePageState() {
+    db = note.createDB();
+  }
+
+  void addContent() async {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      fido = Notes(
+        id: id,
+        title: myTitle.text,
+        content: myContent.text,
+      );
+      id++;
     });
+    note.insertNote(fido, db);
+    print(fido);
+    print(await note.notes(db));
   }
 
   @override
@@ -91,20 +109,50 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Amount of times Button was pushed:',
+            Container(
+              margin: EdgeInsets.all(30.0),
+              child: TextField(
+                controller: myTitle,
+                obscureText: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Title',
+                ),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+            SizedBox(
+              height: 15.0,
+              width: double.infinity,
+            ),
+            Container(
+              margin: EdgeInsets.all(30.0),
+              child: TextField(
+                controller: myContent,
+                obscureText: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Content',
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            RaisedButton(
+              color: Colors.blue,
+              padding: EdgeInsets.all(10.0),
+              onPressed: () {
+                addContent();
+              },
+              child: const Text(
+                'Save',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
