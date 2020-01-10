@@ -1,5 +1,6 @@
+import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -22,7 +23,7 @@ class Notes {
   // each dog when using the print statement.
   @override
   String toString() {
-    return 'Dog{id: $id, title: $title, content: $content}';
+    return 'Notes{id: $id, title: $title, content: $content}';
   }
 
   Future<Database> createDB() async {
@@ -51,11 +52,33 @@ class Notes {
     // Insert the Dog into the correct table. Also specify the
     // `conflictAlgorithm`. In this case, if the same dog is inserted
     // multiple times, it replaces the previous data.
-    await db.insert(
-      'notes',
-      note.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+
+    //Checks if the Title is more than 10 characters
+    //if it is then it does not add to the database
+    if (note.title.length < 10) {
+      await db.insert(
+        'notes',
+        note.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      Fluttertoast.showToast(
+          msg: "Note saved successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.black,
+          fontSize: 16.0);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Note not saved",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
   }
 
   Future<List<Notes>> notes(Future<Database> database) async {
